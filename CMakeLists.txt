@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
-project(tomo LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+
+project(tomography LANGUAGES CUDA CXX)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -10,12 +10,25 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
+set(CMAKE_CXX_STANDARD 17)
+
+if (NOT MSVC)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 include(FindOpenMP)
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif ()
+
+option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
+
+if(NOT DEFINED CMAKE_CUDA_STANDARD)
+    set(CMAKE_CUDA_STANDARD 11)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
 
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
@@ -47,3 +60,12 @@ set_target_properties(libtomo
 
 install(TARGETS libtomo
         LIBRARY DESTINATION longitudinal_tomography/cpp_routines)
+
+add_library(gputomo SHARED
+    longitudinal_tomography/cpp_routines/kick_and_drift.cu
+)
+
+set_target_properties(
+    gputomo
+    PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON)
