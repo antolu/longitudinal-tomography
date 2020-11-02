@@ -22,3 +22,6 @@ __doc/build
 *.npy
 *.so
 *.o
+/cmake-build-debug/
+/cmake-build-release/
+/.idea/
