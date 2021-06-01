@@ -18,15 +18,15 @@
 // Uses BLonD fast_sin function.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-extern "C" void tomo::kick_up(const double *dphi,
-                        double *denergy,
-                        const double rfv1,
-                        const double rfv2,
-                        const double phi0,
-                        const double phi12,
-                        const double hratio,
-                        const int nr_particles,
-                        const double acc_kick) {
+void tomo::kick_up(const double *dphi,
+                   double *denergy,
+                   const double rfv1,
+                   const double rfv2,
+                   const double phi0,
+                   const double phi12,
+                   const double hratio,
+                   const int nr_particles,
+                   const double acc_kick) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -34,15 +34,15 @@ extern "C" void tomo::kick_up(const double *dphi,
                       + rfv2 * vdt::fast_sin(hratio * (dphi[i] + phi0 - phi12)) - acc_kick;
 }
 
-extern "C" void tomo::kick_down(const double *dphi,
-                          double *denergy,
-                          const double rfv1,
-                          const double rfv2,
-                          const double phi0,
-                          const double phi12,
-                          const double hratio,
-                          const int nr_particles,
-                          const double acc_kick) {
+void tomo::kick_down(const double *dphi,
+                     double *denergy,
+                     const double rfv1,
+                     const double rfv2,
+                     const double phi0,
+                     const double phi12,
+                     const double hratio,
+                     const int nr_particles,
+                     const double acc_kick) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -54,19 +54,19 @@ extern "C" void tomo::kick_down(const double *dphi,
 // Calculates the difference in phase between two macine turns.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-extern "C" void tomo::drift_up(double *dphi,
-                         const double *denergy,
-                         const double drift_coef,
-                         const int nr_particles) {
+void tomo::drift_up(double *dphi,
+                    const double *denergy,
+                    const double drift_coef,
+                    const int nr_particles) {
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
         dphi[i] -= drift_coef * denergy[i];
 }
 
-extern "C" void tomo::drift_down(double *dphi,
-                           const double *denergy,
-                           const double drift_coef,
-                           const int nr_particles) {
+void tomo::drift_down(double *dphi,
+                      const double *denergy,
+                      const double drift_coef,
+                      const int nr_particles) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -77,19 +77,19 @@ extern "C" void tomo::drift_down(double *dphi,
 // Calculates X and Y coordinates for particles based on a given
 //  phase and energy.
 // Can be called directly from python.
-extern "C" void tomo::calc_xp_and_yp(double **xp,           // inn/out
-                               double **yp,           // inn/out
-                               const double *denergy, // inn
-                               const double *dphi,    // inn
-                               const double phi0,
-                               const double hnum,
-                               const double omega_rev0,
-                               const double dtbin,
-                               const double xorigin,
-                               const double dEbin,
-                               const double yat0,
-                               const int profile,
-                               const int nparts) {
+void tomo::calc_xp_and_yp(double **xp,           // inn/out
+                          double **yp,           // inn/out
+                          const double *denergy, // inn
+                          const double *dphi,    // inn
+                          const double phi0,
+                          const double hnum,
+                          const double omega_rev0,
+                          const double dtbin,
+                          const double xorigin,
+                          const double dEbin,
+                          const double yat0,
+                          const int profile,
+                          const int nparts) {
 #pragma omp parallel for
     for (int i = 0; i < nparts; i++) {
         xp[profile][i] = (dphi[i] + phi0) / (hnum * omega_rev0 * dtbin) - xorigin;
@@ -97,7 +97,7 @@ extern "C" void tomo::calc_xp_and_yp(double **xp,           // inn/out
     }//for
 }
 
-extern "C" void tomo::kick_and_drift(
+void tomo::kick_and_drift(
         double **xp,             // inn/out
         double **yp,             // inn/out
         double *denergy,         // inn

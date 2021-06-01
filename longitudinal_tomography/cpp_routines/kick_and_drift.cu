@@ -19,7 +19,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
     }
 }
 
-extern "C" void GPU::kick_and_drift(
+void GPU::kick_and_drift(
         double *__restrict__ xp,             // inn/out
         double *__restrict__ yp,             // inn/out
         double *__restrict__ denergy,         // inn
