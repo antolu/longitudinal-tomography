@@ -5,8 +5,8 @@
  * Pybind11 wrappers for tomography C++ routines
  */
 
-#ifndef TOMOGRAPHYV3_LIBTOMO_H
-#define TOMOGRAPHYV3_LIBTOMO_H
+#ifndef LIBTOMO_CPU_H
+#define LIBTOMO_CPU_H
 
 #include <optional>
 #include <pybind11/pybind11.h>

@@ -14,13 +14,11 @@
 #include <cmath>
 #include "kick_and_drift.h"
 
-using namespace std;
-
 // Calculates the difference in energy between two machine turns.
 // Uses BLonD fast_sin function.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-extern "C" void kick_up(const double *dphi,
+extern "C" void tomo::kick_up(const double *dphi,
                         double *denergy,
                         const double rfv1,
                         const double rfv2,
@@ -36,7 +34,7 @@ extern "C" void kick_up(const double *dphi,
                       + rfv2 * vdt::fast_sin(hratio * (dphi[i] + phi0 - phi12)) - acc_kick;
 }
 
-extern "C" void kick_down(const double *dphi,
+extern "C" void tomo::kick_down(const double *dphi,
                           double *denergy,
                           const double rfv1,
                           const double rfv2,
@@ -56,7 +54,7 @@ extern "C" void kick_down(const double *dphi,
 // Calculates the difference in phase between two macine turns.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-extern "C" void drift_up(double *dphi,
+extern "C" void tomo::drift_up(double *dphi,
                          const double *denergy,
                          const double drift_coef,
                          const int nr_particles) {
@@ -65,7 +63,7 @@ extern "C" void drift_up(double *dphi,
         dphi[i] -= drift_coef * denergy[i];
 }
 
-extern "C" void drift_down(double *dphi,
+extern "C" void tomo::drift_down(double *dphi,
                            const double *denergy,
                            const double drift_coef,
                            const int nr_particles) {
@@ -79,7 +77,7 @@ extern "C" void drift_down(double *dphi,
 // Calculates X and Y coordinates for particles based on a given
 //  phase and energy.
 // Can be called directly from python.
-extern "C" void calc_xp_and_yp(double **xp,           // inn/out
+extern "C" void tomo::calc_xp_and_yp(double **xp,           // inn/out
                                double **yp,           // inn/out
                                const double *denergy, // inn
                                const double *dphi,    // inn
@@ -99,7 +97,7 @@ extern "C" void calc_xp_and_yp(double **xp,           // inn/out
     }//for
 }
 
-extern "C" void kick_and_drift(
+extern "C" void tomo::kick_and_drift(
         double **xp,             // inn/out
         double **yp,             // inn/out
         double *denergy,         // inn

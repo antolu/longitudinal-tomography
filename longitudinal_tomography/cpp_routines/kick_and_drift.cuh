@@ -5,7 +5,28 @@
 #ifndef TOMOGRAPHYV3_KICK_AND_DRIFT_CUH
 #define TOMOGRAPHYV3_KICK_AND_DRIFT_CUH
 
-//namespace GPU {
+#include <cuda_runtime.h>
+
+namespace GPU {
+    extern "C" void kick_and_drift(
+            double *__restrict__ xp,             // inn/out
+            double *__restrict__ yp,             // inn/out
+            double *__restrict__ denergy,         // inn
+            double *__restrict__ dphi,            // inn
+            const double *__restrict__ rf1v,      // inn
+            const double *__restrict__ rf2v,      // inn
+            const double *__restrict__ phi0,      // inn
+            const double *__restrict__ deltaE0,   // inn
+            const double *__restrict__ drift_coef,// inn
+            const double * phi12,
+            const double hratio,
+            const int dturns,
+            const int rec_prof,
+            const int nturns,
+            const int nparts,
+            const int nprofs,
+            const bool ftn_out);
+
     __global__ void k_d(double *__restrict__ xp,             // inn/out
                                    double *__restrict__ yp,             // inn/out
                                    double *__restrict__ denergy,         // inn
@@ -14,9 +35,8 @@
                                    const double *__restrict__ rf2v,      // inn
                                    const double *__restrict__ phi0,      // inn
                                    const double *__restrict__ deltaE0,   // inn
-                                   const double *__restrict__ omega_rev0,// inn
                                    const double *__restrict__ drift_coef,// inn
-                                   const double phi12,
+                                   const double * phi12,
                                    const double hratio,
                                    const int dturns,
                                    const int rec_prof,
@@ -72,6 +92,6 @@
                                    const double yat0,
                                    const int profile,
                                    const int nparts);
-//}
+}
 
 #endif //TOMOGRAPHYV3_KICK_AND_DRIFT_CUH

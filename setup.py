@@ -18,7 +18,8 @@ elif platform.system() == 'Linux':
 cpp_routines = Pybind11Extension(
     'longitudinal_tomography.cpp_routines.libtomo',
     cxx_std=17,
-    sources=['longitudinal_tomography/cpp_routines/libtomo.cpp',
+    sources=['longitudinal_tomography/cpp_routines/libtomo.cpu.cpp',
+             'longitudinal_tomography/cpp_routines/wrappers.cpu.cpp',
              'longitudinal_tomography/cpp_routines/reconstruct.cpp',
              'longitudinal_tomography/cpp_routines/kick_and_drift.cpp',
              'longitudinal_tomography/cpp_routines/data_treatment.cpp'],
