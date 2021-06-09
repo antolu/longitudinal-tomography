@@ -72,7 +72,7 @@ void GPU::kick_and_drift(
     cudaErrorCheck( cudaMemcpy(d_deltaE0, deltaE0, size_nturns, cudaMemcpyHostToDevice) );
     cudaErrorCheck( cudaMemcpy(d_drift_coef, drift_coef, size_nturns, cudaMemcpyHostToDevice) );
 
-    k_d<<<nparts * nprofs/THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(d_xp, d_yp, d_denergy, d_dphi, d_rf1v, d_rf2v,
+    k_d<<<(nparts * nprofs + 1)/THREADS_PER_BLOCK - 1, THREADS_PER_BLOCK>>>(d_xp, d_yp, d_denergy, d_dphi, d_rf1v, d_rf2v,
             d_phi0, d_deltaE0, d_drift_coef,
             d_phi12, hratio, dturns, rec_prof, nturns, nparts, nprofs, ftn_out);
     cudaErrorCheck( cudaPeekAtLastError() );

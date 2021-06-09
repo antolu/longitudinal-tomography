@@ -44,6 +44,7 @@ if (PYBIND11_NOT_FOUND)
     message(FATAL_ERROR "PyBind11 headers not found")
 endif ()
 
+include_directories("${PROJECT_SOURCE_DIR}/longitudinal_tomography/cpp_routines/")
 include_directories(${Python_INCLUDE_DIRS})
 include_directories(${PYBIND11_INCLUDE_DIR})
 
@@ -69,6 +70,7 @@ add_library(libgputomo SHARED
     longitudinal_tomography/cpp_routines/libtomo.gpu.cpp
     longitudinal_tomography/cpp_routines/kick_and_drift.cpp
     longitudinal_tomography/cpp_routines/reconstruct.cpp
+    longitudinal_tomography/cpp_routines/reconstruct.cu
     longitudinal_tomography/cpp_routines/data_treatment.cpp
     longitudinal_tomography/cpp_routines/wrappers.gpu.cpp
     longitudinal_tomography/cpp_routines/wrappers.cpu.cpp
