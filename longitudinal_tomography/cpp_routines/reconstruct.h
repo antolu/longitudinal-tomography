@@ -19,7 +19,7 @@
 #include <cmath>
 #include "pybind11/pybind11.h"
 
-namespace tomo {
+namespace CPU {
     // Back projection using flattened arrays
     extern "C" void back_project(double *weights,
                                  int *flat_points,

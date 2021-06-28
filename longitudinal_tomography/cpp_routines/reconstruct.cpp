@@ -17,7 +17,7 @@
 #include "reconstruct.h"
 
 // Back projection using flattened arrays
-extern "C" void tomo::back_project(double *weights,                     // inn/out
+extern "C" void CPU::back_project(double *weights,                     // inn/out
                              int *flat_points,       // inn
                              const double *flat_profiles,         // inn
                              const int npart, const int nprof) {     // inn
@@ -28,7 +28,7 @@ extern "C" void tomo::back_project(double *weights,                     // inn/o
 }
 
 // Projections using flattened arrays
-extern "C" void tomo::project(double *flat_rec,                     // inn/out
+extern "C" void CPU::project(double *flat_rec,                     // inn/out
                         int *flat_points,        // inn
                         const double *weights,   // inn
                         const int npart, const int nprof) {      // inn
@@ -37,7 +37,7 @@ extern "C" void tomo::project(double *flat_rec,                     // inn/out
             flat_rec[flat_points[i * nprof + j]] += weights[i];
 }
 
-void tomo::normalize(double *flat_rec, // inn/out
+void CPU::normalize(double *flat_rec, // inn/out
                const int nprof,
                const int nbins) {
     double sum_waterfall = 0.0;
@@ -55,7 +55,7 @@ void tomo::normalize(double *flat_rec, // inn/out
         throw std::runtime_error("Phase space reduced to zeroes!");
 }
 
-void tomo::clip(double *array, // inn/out
+void CPU::clip(double *array, // inn/out
           const int length,
           const double clip_val) {
 #pragma omp parallel for
@@ -74,7 +74,7 @@ void find_difference_profile(double *diff_prof,           // out
         diff_prof[i] = flat_profiles[i] - flat_rec[i];
 }
 
-double tomo::discrepancy(const double *diff_prof,   // inn
+double CPU::discrepancy(const double *diff_prof,   // inn
                    const int nprof,
                    const int nbins) {
     int all_bins = nprof * nbins;
@@ -87,7 +87,7 @@ double tomo::discrepancy(const double *diff_prof,   // inn
     return std::sqrt(squared_sum / (nprof * nbins));
 }
 
-void tomo::find_difference_profile(double *diff_prof,           // out
+void CPU::find_difference_profile(double *diff_prof,           // out
                              const double *flat_rec,      // inn
                              const double *flat_profiles, // inn
                              const int all_bins) {
@@ -97,7 +97,7 @@ void tomo::find_difference_profile(double *diff_prof,           // out
 }
 
 
-void tomo::compensate_particle_amount(double *diff_prof,        // inn/out
+void CPU::compensate_particle_amount(double *diff_prof,        // inn/out
                                 double *rparts,          // inn
                                 const int nprof,
                                 const int nbins) {
@@ -109,7 +109,7 @@ void tomo::compensate_particle_amount(double *diff_prof,        // inn/out
         }
 }
 
-double tomo::max_2d(double **arr,  // inn
+double CPU::max_2d(double **arr,  // inn
               const int x_axis,
               const int y_axis) {
     double max_bin_val = 0;
@@ -120,7 +120,7 @@ double tomo::max_2d(double **arr,  // inn
     return max_bin_val;
 }
 
-double tomo::max_1d(double *arr, const int length) {
+double CPU::max_1d(double *arr, const int length) {
     double max_bin_val = 0;
     for (int i = 0; i < length; i++)
         if (max_bin_val < arr[i])
@@ -129,14 +129,14 @@ double tomo::max_1d(double *arr, const int length) {
 }
 
 
-double tomo::sum(double *arr, const int length) {
+double CPU::sum(double *arr, const int length) {
     double sum = 0;
     for (int i = 0; i < length; i++)
         sum += arr[i];
     return sum;
 }
 
-void tomo::count_particles_in_bin(double *rparts,      // out
+void CPU::count_particles_in_bin(double *rparts,      // out
                             const int *xp,       // inn
                             const int nprof,
                             const int npart,
@@ -149,7 +149,7 @@ void tomo::count_particles_in_bin(double *rparts,      // out
         }
 }
 
-void tomo::reciprocal_particles(double *rparts,   // out
+void CPU::reciprocal_particles(double *rparts,   // out
                           const int *xp,     // inn
                           const int nbins,
                           const int nprof,
@@ -176,7 +176,7 @@ void tomo::reciprocal_particles(double *rparts,   // out
         }
 }
 
-void tomo::create_flat_points(const int *xp,       //inn
+void CPU::create_flat_points(const int *xp,       //inn
                         int *flat_points,    //out
                         const int npart,
                         const int nprof,
@@ -189,7 +189,7 @@ void tomo::create_flat_points(const int *xp,       //inn
             flat_points[i * nprof + j] += nbins * j;
 }
 
-extern "C" void tomo::reconstruct(double *weights,             // out
+extern "C" void CPU::reconstruct(double *weights,             // out
                             const int *xp,              // inn
                             const double *flat_profiles, // inn
                             double *flat_rec,            // Out
