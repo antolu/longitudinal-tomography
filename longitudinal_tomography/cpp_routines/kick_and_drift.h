@@ -12,7 +12,7 @@
 #include <functional>
 
 
-namespace tomo {
+namespace CPU {
     // Calculates the difference in energy between two machine turns.
     // Uses BLonD fast_sin function.
     // Can be called directly from python.

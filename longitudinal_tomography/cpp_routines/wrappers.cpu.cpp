@@ -44,7 +44,7 @@ void CPU::wrapper_kick_up(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    tomo::kick_up(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
+    CPU::kick_up(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
 }
 
 
@@ -64,7 +64,7 @@ void CPU::wrapper_kick_down(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    tomo::kick_down(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
+    CPU::kick_down(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
 }
 
 
@@ -110,7 +110,7 @@ void CPU::wrapper_drift_up(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    tomo::drift_up(dphi, denergy, drift_coef, n_particles);
+    CPU::drift_up(dphi, denergy, drift_coef, n_particles);
 }
 
 
@@ -125,7 +125,7 @@ void CPU::wrapper_drift_down(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    tomo::drift_down(dphi, denergy, drift_coef, nr_particles);
+    CPU::drift_down(dphi, denergy, drift_coef, nr_particles);
 }
 
 
@@ -285,7 +285,16 @@ py::tuple CPU::wrapper_kick_and_drift_array(
         throw;
     }
 
+    <<<<<<< HEAD
     cleanup();
+    =======
+    CPU::kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
+                        phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
+
+    delete[] yp_d;
+    delete[] xp_d;
+    >>>>>>> 63b2f99(rename
+    tomo namespace to CPU)
 
     return py::make_tuple(input_xp, input_yp);
 }
@@ -306,7 +315,7 @@ d_array CPU::wrapper_back_project(
 
     auto *const flat_profiles = static_cast<double *>(buffer_flat_profiles.ptr);
 
-    tomo::back_project(weights, flat_points, flat_profiles, n_particles, n_profiles);
+    CPU::back_project(weights, flat_points, flat_profiles, n_particles, n_profiles);
 
     return input_weights;
 }
@@ -328,7 +337,7 @@ d_array CPU::wrapper_project(
     auto *flat_points = static_cast<int *>(buffer_flat_points.ptr);
     auto *const flat_rec = static_cast<double *>(buffer_flat_rec.ptr);
 
-    tomo::project(flat_rec, flat_points, weights, n_particles, n_profiles);
+    CPU::project(flat_rec, flat_points, weights, n_particles, n_profiles);
 
     buffer_flat_rec.shape = std::vector<ssize_t>{n_profiles, n_bins};
 

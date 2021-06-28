@@ -9,16 +9,14 @@
  */
 
 #include <iostream>
-#include <string>
 #include "sin.h"
-#include <cmath>
 #include "kick_and_drift.h"
 
 // Calculates the difference in energy between two machine turns.
 // Uses BLonD fast_sin function.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-void tomo::kick_up(const double *dphi,
+void CPU::kick_up(const double *dphi,
                    double *denergy,
                    const double rfv1,
                    const double rfv2,
@@ -34,7 +32,7 @@ void tomo::kick_up(const double *dphi,
                       + rfv2 * vdt::fast_sin(hratio * (dphi[i] + phi0 - phi12)) - acc_kick;
 }
 
-void tomo::kick_down(const double *dphi,
+void CPU::kick_down(const double *dphi,
                      double *denergy,
                      const double rfv1,
                      const double rfv2,
@@ -54,7 +52,7 @@ void tomo::kick_down(const double *dphi,
 // Calculates the difference in phase between two macine turns.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
-void tomo::drift_up(double *dphi,
+void CPU::drift_up(double *dphi,
                     const double *denergy,
                     const double drift_coef,
                     const int nr_particles) {
@@ -63,7 +61,7 @@ void tomo::drift_up(double *dphi,
         dphi[i] -= drift_coef * denergy[i];
 }
 
-void tomo::drift_down(double *dphi,
+void CPU::drift_down(double *dphi,
                       const double *denergy,
                       const double drift_coef,
                       const int nr_particles) {
@@ -77,7 +75,7 @@ void tomo::drift_down(double *dphi,
 // Calculates X and Y coordinates for particles based on a given
 //  phase and energy.
 // Can be called directly from python.
-void tomo::calc_xp_and_yp(double **xp,           // inn/out
+void CPU::calc_xp_and_yp(double **xp,           // inn/out
                           double **yp,           // inn/out
                           const double *denergy, // inn
                           const double *dphi,    // inn
@@ -97,7 +95,7 @@ void tomo::calc_xp_and_yp(double **xp,           // inn/out
     }//for
 }
 
-void tomo::kick_and_drift(
+void CPU::kick_and_drift(
         double **xp,             // inn/out
         double **yp,             // inn/out
         double *denergy,         // inn
