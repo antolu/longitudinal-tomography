@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(tomography LANGUAGES CUDA CXX)
+project(tomography LANGUAGES CXX)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -25,11 +25,15 @@ endif ()
 
 option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
 
-find_package(CUDA REQUIRED)
-include_directories("${CUDA_INCLUDE_DIRS}")
-if(NOT DEFINED CMAKE_CUDA_STANDARD)
-    set(CMAKE_CUDA_STANDARD 11)
-    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+find_package(CUDA)
+if(CUDA_FOUND)
+    include_directories("${CUDA_INCLUDE_DIRS}")
+    if(NOT DEFINED CMAKE_CUDA_STANDARD)
+        set(CMAKE_CUDA_STANDARD 11)
+        set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+    endif()
+else()
+    message("CUDA is not installed or could not be found. libgputomo will not be available.")
 endif()
 
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
@@ -65,22 +69,25 @@ set_target_properties(libtomo
 install(TARGETS libtomo
         LIBRARY DESTINATION longitudinal_tomography/cpp_routines)
 
-add_library(libgputomo SHARED
-    longitudinal_tomography/cpp_routines/kick_and_drift.cu
-    longitudinal_tomography/cpp_routines/libtomo.gpu.cpp
-    longitudinal_tomography/cpp_routines/kick_and_drift.cpp
-    longitudinal_tomography/cpp_routines/reconstruct.cpp
-    longitudinal_tomography/cpp_routines/reconstruct.cu
-    longitudinal_tomography/cpp_routines/data_treatment.cpp
-    longitudinal_tomography/cpp_routines/wrappers.gpu.cpp
-    longitudinal_tomography/cpp_routines/wrappers.cpu.cpp
-)
+if (CUDA_FOUND)
+    message("CUDA is available. libgputomo can be built.")
+    add_library(libgputomo SHARED
+        longitudinal_tomography/cpp_routines/kick_and_drift.cu
+        longitudinal_tomography/cpp_routines/libtomo.gpu.cpp
+        longitudinal_tomography/cpp_routines/kick_and_drift.cpp
+        longitudinal_tomography/cpp_routines/reconstruct.cpp
+        longitudinal_tomography/cpp_routines/reconstruct.cu
+        longitudinal_tomography/cpp_routines/data_treatment.cpp
+        longitudinal_tomography/cpp_routines/wrappers.gpu.cpp
+        longitudinal_tomography/cpp_routines/wrappers.cpu.cpp
+    )
 
-target_link_libraries(libgputomo ${Python_LIBRARIES})
+    target_link_libraries(libgputomo ${Python_LIBRARIES})
 
-set_target_properties(libgputomo
-    PROPERTIES
-    CUDA_SEPARABLE_COMPILATION ON
-    CUDA_ARCHITECTURES 61;75;86
-    PREFIX ""
-    OUTPUT_NAME "libtomo")
+    set_target_properties(libgputomo
+        PROPERTIES
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_ARCHITECTURES 61;75;86
+        PREFIX ""
+        OUTPUT_NAME "libtomo")
+endif()
