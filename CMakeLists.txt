@@ -90,4 +90,7 @@ if (CUDA_FOUND)
         CUDA_ARCHITECTURES 61;75;86
         PREFIX ""
         OUTPUT_NAME "libtomo")
+
+    install(TARGETS libgputomo
+            LIBRARY DESTINATION longitudinal_tomography/cpp_routines)
 endif()
