@@ -46,7 +46,7 @@ PYBIND11_MODULE(libtomo, m) {
     m.def("drift_down", &CPU::wrapper_drift_down, "Tomography drift down",
           "dphi"_a, "denergy"_a, "drift_coef"_a, "n_particles"_a);
 
-    m.def("kick_and_drift", &CPU::wrapper_kick_and_drift_machine, kick_and_drift_docs,
+    m.def("kick_and_drift", &GPU::wrapper_kick_and_drift_machine, kick_and_drift_docs,
           "xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "machine"_a,
           "rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none());
 
@@ -83,10 +83,6 @@ PYBIND11_MODULE(libtomo, m) {
     m.def("reconstruct", &CPU::wrapper_reconstruct, reconstruct_docs,
           "xp"_a, "waterfall"_a, "n_iter"_a, "n_bins"_a, "n_particles"_a,
           "n_profiles"_a, "verbose"_a = false, "callback"_a = py::none());
-
-    m.def("reconstruct_old", &CPU::wrapper_reconstruct_old, reconstruct_old_docs,
-          "weights"_a, "xp"_a, "flat_profiles"_a, "discr"_a, "n_iter"_a,
-          "n_bins"_a, "n_particles"_a, "n_profiles"_a, "verbose"_a = false);
 
     m.def("make_phase_space", &CPU::wrapper_make_phase_space, make_phase_space_docs,
           "xp"_a, "yp"_a, "weights"_a, "n_bins"_a);

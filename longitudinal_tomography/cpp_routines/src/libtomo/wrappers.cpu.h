@@ -160,18 +160,6 @@ namespace CPU {
             const std::optional<const py::object> callback);
 
 
-    py::tuple wrapper_reconstruct_old(
-            const d_array &weights,
-            const i_array &xp,
-            const d_array &flat_profiles,
-            const d_array &discr,
-            const int n_iter,
-            const int n_bins,
-            const int n_particles,
-            const int n_profiles,
-            const bool verbose);
-
-
     py::array_t<double> wrapper_make_phase_space(
             const i_array &input_xp,
             const i_array &input_yp,
