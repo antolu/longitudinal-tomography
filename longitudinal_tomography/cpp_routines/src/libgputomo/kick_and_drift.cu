@@ -8,11 +8,10 @@
 #define THREADS_PER_BLOCK 512
 
 #define cudaErrorCheck(exit_code) { gpuAssert((exit_code), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
-{
-    if (code != cudaSuccess)
-    {
-        fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true) {
+    if (code != cudaSuccess) {
+        fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
         if (abort) exit(code);
     }
 }
@@ -27,7 +26,7 @@ void GPU::kick_and_drift(
         const double *__restrict__ phi0,      // inn
         const double *__restrict__ deltaE0,   // inn
         const double *__restrict__ drift_coef,// inn
-        const double * phi12,
+        const double *phi12,
         const double hratio,
         const int dturns,
         const int rec_prof,
@@ -44,71 +43,73 @@ void GPU::kick_and_drift(
     int size_nparts = nparts * sizeof(double);
     int size_nturns = nturns * sizeof(double);
 
-    cudaErrorCheck( cudaMalloc((void **) &d_xp, size_xyp) );
-    cudaErrorCheck( cudaMalloc((void **) &d_yp, size_xyp) );
+    cudaErrorCheck(cudaMalloc((void **) &d_xp, size_xyp));
+    cudaErrorCheck(cudaMalloc((void **) &d_yp, size_xyp));
 
-    cudaErrorCheck( cudaMalloc((void **) &d_denergy, size_nparts) );
-    cudaErrorCheck( cudaMalloc((void **) &d_dphi, size_nparts) );
+    cudaErrorCheck(cudaMalloc((void **) &d_denergy, size_nparts));
+    cudaErrorCheck(cudaMalloc((void **) &d_dphi, size_nparts));
 
-    cudaErrorCheck( cudaMalloc((void **) &d_rf1v, size_nturns) );
-    cudaErrorCheck( cudaMalloc((void **) &d_rf2v, size_nturns) );
-    cudaErrorCheck( cudaMalloc((void **) &d_phi0, size_nturns) );
-    cudaErrorCheck( cudaMalloc((void **) &d_phi12, size_nturns) );
-    cudaErrorCheck( cudaMalloc((void **) &d_deltaE0, size_nturns) );
-    cudaErrorCheck( cudaMalloc((void **) &d_drift_coef, size_nturns) );
+    cudaErrorCheck(cudaMalloc((void **) &d_rf1v, size_nturns));
+    cudaErrorCheck(cudaMalloc((void **) &d_rf2v, size_nturns));
+    cudaErrorCheck(cudaMalloc((void **) &d_phi0, size_nturns));
+    cudaErrorCheck(cudaMalloc((void **) &d_phi12, size_nturns));
+    cudaErrorCheck(cudaMalloc((void **) &d_deltaE0, size_nturns));
+    cudaErrorCheck(cudaMalloc((void **) &d_drift_coef, size_nturns));
 
 //    cudaMemcpy(d_xp, xp, size_xyp, cudaMemcpyHostToDevice);
 //    cudaMemcpy(d_yp, yp, size_xyp, cudaMemcpyHostToDevice);
 
-    cudaErrorCheck( cudaMemcpy(d_denergy, denergy, size_nparts, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_dphi, dphi, size_nparts, cudaMemcpyHostToDevice) );
+    cudaErrorCheck(cudaMemcpy(d_denergy, denergy, size_nparts, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_dphi, dphi, size_nparts, cudaMemcpyHostToDevice));
 
-    cudaErrorCheck( cudaMemcpy(d_rf1v, rf1v, size_nturns, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_rf2v, rf2v, size_nturns, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_phi0, phi0, size_nturns, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_phi12, phi12, size_nturns, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_deltaE0, deltaE0, size_nturns, cudaMemcpyHostToDevice) );
-    cudaErrorCheck( cudaMemcpy(d_drift_coef, drift_coef, size_nturns, cudaMemcpyHostToDevice) );
+    cudaErrorCheck(cudaMemcpy(d_rf1v, rf1v, size_nturns, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_rf2v, rf2v, size_nturns, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_phi0, phi0, size_nturns, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_phi12, phi12, size_nturns, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_deltaE0, deltaE0, size_nturns, cudaMemcpyHostToDevice));
+    cudaErrorCheck(cudaMemcpy(d_drift_coef, drift_coef, size_nturns, cudaMemcpyHostToDevice));
 
-    k_d<<<(nparts * nprofs + 1)/THREADS_PER_BLOCK - 1, THREADS_PER_BLOCK>>>(d_xp, d_yp, d_denergy, d_dphi, d_rf1v, d_rf2v,
-            d_phi0, d_deltaE0, d_drift_coef,
-            d_phi12, hratio, dturns, rec_prof, nturns, nparts, nprofs, ftn_out);
-    cudaErrorCheck( cudaPeekAtLastError() );
+    k_d<<<(nparts * nprofs + 1) / THREADS_PER_BLOCK - 1, THREADS_PER_BLOCK>>>(d_xp, d_yp, d_denergy, d_dphi, d_rf1v,
+                                                                              d_rf2v,
+                                                                              d_phi0, d_deltaE0, d_drift_coef,
+                                                                              d_phi12, hratio, dturns, rec_prof, nturns,
+                                                                              nparts, nprofs, ftn_out);
+    cudaErrorCheck(cudaPeekAtLastError());
 
 //    cudaErrorCheck( cudaDeviceSynchronize() );
 
-    cudaErrorCheck( cudaMemcpy(xp, d_xp, size_xyp, cudaMemcpyDeviceToHost) );
-    cudaErrorCheck( cudaMemcpy(yp, d_yp, size_xyp, cudaMemcpyDeviceToHost) );
+    cudaErrorCheck(cudaMemcpy(xp, d_xp, size_xyp, cudaMemcpyDeviceToHost));
+    cudaErrorCheck(cudaMemcpy(yp, d_yp, size_xyp, cudaMemcpyDeviceToHost));
 
-    cudaErrorCheck( cudaFree(d_xp) );
-    cudaErrorCheck( cudaFree(d_yp) );
-    cudaErrorCheck( cudaFree(d_denergy) );
-    cudaErrorCheck( cudaFree(d_dphi) );
-    cudaErrorCheck( cudaFree(d_rf1v) );
-    cudaErrorCheck( cudaFree(d_rf2v) );
-    cudaErrorCheck( cudaFree(d_phi0) );
-    cudaErrorCheck( cudaFree(d_deltaE0) );
-    cudaErrorCheck( cudaFree(d_drift_coef) );
+    cudaErrorCheck(cudaFree(d_xp));
+    cudaErrorCheck(cudaFree(d_yp));
+    cudaErrorCheck(cudaFree(d_denergy));
+    cudaErrorCheck(cudaFree(d_dphi));
+    cudaErrorCheck(cudaFree(d_rf1v));
+    cudaErrorCheck(cudaFree(d_rf2v));
+    cudaErrorCheck(cudaFree(d_phi0));
+    cudaErrorCheck(cudaFree(d_deltaE0));
+    cudaErrorCheck(cudaFree(d_drift_coef));
 }
 
 
 __global__ void GPU::k_d(double *__restrict__ xp,             // inn/out
-                                    double *__restrict__ yp,             // inn/out
-                                    double *__restrict__ denergy,         // inn
-                                    double *__restrict__ dphi,            // inn
-                                    const double *__restrict__ rf1v,      // inn
-                                    const double *__restrict__ rf2v,      // inn
-                                    const double *__restrict__ phi0,      // inn
-                                    const double *__restrict__ deltaE0,   // inn
-                                    const double *__restrict__ drift_coef,// inn
-                                    const double * phi12,
-                                    const double hratio,
-                                    const int dturns,
-                                    const int rec_prof,
-                                    const int nturns,
-                                    const int nparts,
-                                    const int nprofs,
-                                    const bool ftn_out) {
+                         double *__restrict__ yp,             // inn/out
+                         double *__restrict__ denergy,         // inn
+                         double *__restrict__ dphi,            // inn
+                         const double *__restrict__ rf1v,      // inn
+                         const double *__restrict__ rf2v,      // inn
+                         const double *__restrict__ phi0,      // inn
+                         const double *__restrict__ deltaE0,   // inn
+                         const double *__restrict__ drift_coef,// inn
+                         const double *phi12,
+                         const double hratio,
+                         const int dturns,
+                         const int rec_prof,
+                         const int nturns,
+                         const int nparts,
+                         const int nprofs,
+                         const bool ftn_out) {
 
     int profile = rec_prof;
     int turn = rec_prof * dturns;
@@ -129,7 +130,7 @@ __global__ void GPU::k_d(double *__restrict__ xp,             // inn/out
         turn++;
 
         kick_up(dphi, denergy, rf1v[turn], rf2v[turn], phi0[turn], phi12[turn],
-                     hratio, nparts, deltaE0[turn], index);
+                hratio, nparts, deltaE0[turn], index);
 
         if (turn % dturns == 0) {
             profile++;
@@ -158,7 +159,7 @@ __global__ void GPU::k_d(double *__restrict__ xp,             // inn/out
         // Downwards
         while (turn > 0) {
             kick_down(dphi, denergy, rf1v[turn], rf2v[turn], phi0[turn],
-                           phi12[turn], hratio, nparts, deltaE0[turn], index);
+                      phi12[turn], hratio, nparts, deltaE0[turn], index);
             turn--;
 
             drift_down(dphi, denergy, drift_coef[turn], nparts, index);

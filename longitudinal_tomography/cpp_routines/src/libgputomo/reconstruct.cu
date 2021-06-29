@@ -53,7 +53,7 @@ void GPU::reconstruct(double *weights,
 //    GPU::create_flat_points(xp, flat_points, npart, nprof, nbins);
 
     GPU::back_project(weights, flat_points, flat_profiles, npart, nprof);
-    GPU::clip<<<nprof*nbins/THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(weights, npart, 0.0);
+    GPU::clip<<<nprof * nbins / THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(weights, npart, 0.0);
 
     if (verbose)
         printf(" Iterating...\n");
@@ -72,7 +72,7 @@ void GPU::reconstruct(double *weights,
         compensate_particle_amount(diff_prof, rparts, nprof, nbins);
 
         back_project(weights, flat_points, diff_prof, npart, nprof);
-        clip<<<nprof*nbins/THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(weights, npart, 0.0);
+        clip<<<nprof * nbins / THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(weights, npart, 0.0);
     } //end for
 
     // Calculating final discrepancy
@@ -140,8 +140,8 @@ void GPU::normalize(double *flat_rec, // inn/out
 }
 
 __global__ void GPU::clip(double *array, // inn/out
-               const int length,
-               const double clip_val) {
+                          const int length,
+                          const double clip_val) {
     __shared__ bool positive_flag[1];
 
     int index = threadIdx.x + blockIdx.x * blockDim.x;
