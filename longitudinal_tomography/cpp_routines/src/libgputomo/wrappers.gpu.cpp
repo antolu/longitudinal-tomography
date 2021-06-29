@@ -1,8 +1,8 @@
 /**
  * @author Anton Lu (anton.lu@cern.ch)
- * @file wrappers_cpu.cpp
+ * @file wrappers.gpu.cpp
  *
- * Pybind11 wrappers for tomography C++ routines
+ * Pybind11 wrappers for tomography C++ routines, GPU only.
  */
 
 #include <algorithm>

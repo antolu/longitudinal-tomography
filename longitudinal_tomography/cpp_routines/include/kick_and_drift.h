@@ -6,8 +6,8 @@
  * Headers for kick_and_drift code for the convenience of not having to
  * put the function definitions in proper order.
  */
-#ifndef TOMOGRAPHY_KICK_AND_DRIFT_CPP_H
-#define TOMOGRAPHY_KICK_AND_DRIFT_CPP_H
+#ifndef LIBTOMO_KICK_AND_DRIFT_CPP_H
+#define LIBTOMO_KICK_AND_DRIFT_CPP_H
 
 #include <functional>
 

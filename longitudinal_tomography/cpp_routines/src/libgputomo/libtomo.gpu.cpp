@@ -1,8 +1,9 @@
 /**
  * @author Anton Lu (anton.lu@cern.ch)
- * @file libtomo.cpp
+ * @file libtomo.gpu.cpp
  *
- * Pybind11 wrappers for tomography C++ routines
+ * Pybind11 module for tomography C++ routines, includes both CPU and GPU
+ * wrappers depending on the function.
  */
 
 #include <pybind11/pybind11.h>

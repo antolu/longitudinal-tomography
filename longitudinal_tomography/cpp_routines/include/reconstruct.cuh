@@ -8,8 +8,8 @@
  * Meant to be called by a Python/C++ wrapper.
  */
 
-#ifndef TOMO_RECONSTRUCT_CUH
-#define TOMO_RECONSTRUCT_CUH
+#ifndef LIBGPUTOMO_RECONSTRUCT_CUH
+#define LIBGPUTOMO_RECONSTRUCT_CUH
 
 #include <functional>
 #include <iostream>
@@ -109,4 +109,4 @@ namespace GPU {
                                  const bool verbose);
 }
 
-#endif //TOMO_RECONSTRUCT_H
+#endif //LIBGPUTOMO_RECONSTRUCT_H

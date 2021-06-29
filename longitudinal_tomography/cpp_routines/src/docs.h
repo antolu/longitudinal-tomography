@@ -6,8 +6,8 @@
  * using help(libtomo) as with any other python module.
  */
 
-#ifndef TOMO_DOCS_H
-#define TOMO_DOCS_H
+#ifndef LIBTOMO_DOCS_H
+#define LIBTOMO_DOCS_H
 
 const char* kick_docs = R"pbdoc(
     Wrapper for C++ kick function.
@@ -298,4 +298,4 @@ const char * make_phase_space_docs = R"pbdoc(
 )pbdoc";
 
 
-#endif //TOMO_DOCS_H
+#endif //LIBTOMO_DOCS_H

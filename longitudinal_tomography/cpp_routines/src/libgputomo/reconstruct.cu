@@ -1,10 +1,10 @@
 /**
- * @file reconstruct.cpp
+ * @file reconstruct.cu
  *
  * @author Anton Lu
  * Contact: anton.lu@cern.ch
  *
- * Functions in pure C/C++ that handles phase space reconstruction.
+ * Functions in pure C/C++ that handles phase space reconstruction on GPU.
  * Meant to be called by a Python/C++ wrapper.
  */
 

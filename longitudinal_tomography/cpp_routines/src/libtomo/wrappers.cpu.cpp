@@ -1,6 +1,6 @@
 /**
  * @author Anton Lu (anton.lu@cern.ch)
- * @file wrappers_cpu.cpp
+ * @file wrappers.cpu.cpp
  *
  * Pybind11 wrappers for tomography C++ routines
  */

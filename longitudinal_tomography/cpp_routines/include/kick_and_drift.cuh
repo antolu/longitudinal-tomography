@@ -1,9 +1,12 @@
-//
-// Created by anton on 10/22/20.
-//
+/**
+ * @author Anton Lu (anton.lu@cern.ch)
+ * @file kick_and_drift.cuh
+ *
+ * Header file for tracking on GPU
+ */
 
-#ifndef TOMOGRAPHYV3_KICK_AND_DRIFT_CUH
-#define TOMOGRAPHYV3_KICK_AND_DRIFT_CUH
+#ifndef LIBGPUTOMO_KICK_AND_DRIFT_CUH
+#define LIBGPUTOMO_KICK_AND_DRIFT_CUH
 
 #include <cuda_runtime.h>
 
@@ -94,4 +97,4 @@ namespace GPU {
                                    const int nparts);
 }
 
-#endif //TOMOGRAPHYV3_KICK_AND_DRIFT_CUH
+#endif //LIBGPUTOMO_KICK_AND_DRIFT_CUH

@@ -8,8 +8,8 @@
  * Meant to be called by a Python/C++ wrapper.
  */
 
-#ifndef TOMO_RECONSTRUCT_H
-#define TOMO_RECONSTRUCT_H
+#ifndef LIBTOMO_RECONSTRUCT_H
+#define LIBTOMO_RECONSTRUCT_H
 
 #include <functional>
 #include <iostream>
