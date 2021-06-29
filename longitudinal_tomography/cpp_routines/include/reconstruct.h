@@ -22,15 +22,15 @@
 namespace CPU {
     // Back projection using flattened arrays
     void back_project(double *weights,
-                                 int *flat_points,
-                                 const double *flat_profiles,
-                                 const int npart, const int nprof);
+                      int *flat_points,
+                      const double *flat_profiles,
+                      const int npart, const int nprof);
 
     // Projections using flattened arrays
     void project(double *flat_rec,
-                            int *flat_points,
-                            const double *weights,
-                            const int npart, const int nprof);
+                 int *flat_points,
+                 const double *weights,
+                 const int npart, const int nprof);
 
     void normalize(double *flat_rec,
                    const int nprof,
@@ -90,16 +90,16 @@ namespace CPU {
                             const int nbins);
 
     void reconstruct(double *weights,
-                                const int *xp,
-                                const double *flat_profiles,
-                                double *flat_rec,
-                                double *discr,
-                                const int niter,
-                                const int nbins,
-                                const int npart,
-                                const int nprof,
-                                const bool verbose,
-                                const std::function<void(int, int)> callback = 0);
+                     const int *xp,
+                     const double *flat_profiles,
+                     double *flat_rec,
+                     double *discr,
+                     const int niter,
+                     const int nbins,
+                     const int npart,
+                     const int nprof,
+                     const bool verbose,
+                     const std::function<void(int, int)> callback = 0);
 }
 
 #endif //TOMO_RECONSTRUCT_H
