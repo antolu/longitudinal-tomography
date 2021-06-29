@@ -278,23 +278,14 @@ py::tuple CPU::wrapper_kick_and_drift_array(
         cb = [](const int progress, const int total) { (void) progress, (void) total; };
 
     try {
-        kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
+        CPU::kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
                        phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
     } catch (const std::exception &e) {
         cleanup();
         throw;
     }
 
-    <<<<<<< HEAD
     cleanup();
-    =======
-    CPU::kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
-                        phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
-
-    delete[] yp_d;
-    delete[] xp_d;
-    >>>>>>> 63b2f99(rename
-    tomo namespace to CPU)
 
     return py::make_tuple(input_xp, input_yp);
 }
@@ -374,7 +365,7 @@ py::tuple CPU::wrapper_reconstruct(
         cb = [](const int progress, const int total) { (void) progress, (void) total; };
 
     try {
-        reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose, cb);
+        CPU::reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose, cb);
     } catch (const std::exception &e) {
         delete[] weights;
         delete[] discr;
