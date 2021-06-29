@@ -9,22 +9,22 @@
  */
 
 #include <iostream>
-#include "sin.h"
-#include "kick_and_drift.h"
+#include "src/sin.h"
+#include "include/kick_and_drift.h"
 
 // Calculates the difference in energy between two machine turns.
 // Uses BLonD fast_sin function.
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
 void CPU::kick_up(const double *dphi,
-                   double *denergy,
-                   const double rfv1,
-                   const double rfv2,
-                   const double phi0,
-                   const double phi12,
-                   const double hratio,
-                   const int nr_particles,
-                   const double acc_kick) {
+                  double *denergy,
+                  const double rfv1,
+                  const double rfv2,
+                  const double phi0,
+                  const double phi12,
+                  const double hratio,
+                  const int nr_particles,
+                  const double acc_kick) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -33,14 +33,14 @@ void CPU::kick_up(const double *dphi,
 }
 
 void CPU::kick_down(const double *dphi,
-                     double *denergy,
-                     const double rfv1,
-                     const double rfv2,
-                     const double phi0,
-                     const double phi12,
-                     const double hratio,
-                     const int nr_particles,
-                     const double acc_kick) {
+                    double *denergy,
+                    const double rfv1,
+                    const double rfv2,
+                    const double phi0,
+                    const double phi12,
+                    const double hratio,
+                    const int nr_particles,
+                    const double acc_kick) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -53,18 +53,18 @@ void CPU::kick_down(const double *dphi,
 // Can be called directly from python.
 //  Used in hybrid python/C++ class.
 void CPU::drift_up(double *dphi,
-                    const double *denergy,
-                    const double drift_coef,
-                    const int nr_particles) {
+                   const double *denergy,
+                   const double drift_coef,
+                   const int nr_particles) {
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
         dphi[i] -= drift_coef * denergy[i];
 }
 
 void CPU::drift_down(double *dphi,
-                      const double *denergy,
-                      const double drift_coef,
-                      const int nr_particles) {
+                     const double *denergy,
+                     const double drift_coef,
+                     const int nr_particles) {
 
 #pragma omp parallel for
     for (int i = 0; i < nr_particles; i++)
@@ -76,18 +76,18 @@ void CPU::drift_down(double *dphi,
 //  phase and energy.
 // Can be called directly from python.
 void CPU::calc_xp_and_yp(double **xp,           // inn/out
-                          double **yp,           // inn/out
-                          const double *denergy, // inn
-                          const double *dphi,    // inn
-                          const double phi0,
-                          const double hnum,
-                          const double omega_rev0,
-                          const double dtbin,
-                          const double xorigin,
-                          const double dEbin,
-                          const double yat0,
-                          const int profile,
-                          const int nparts) {
+                         double **yp,           // inn/out
+                         const double *denergy, // inn
+                         const double *dphi,    // inn
+                         const double phi0,
+                         const double hnum,
+                         const double omega_rev0,
+                         const double dtbin,
+                         const double xorigin,
+                         const double dEbin,
+                         const double yat0,
+                         const int profile,
+                         const int nparts) {
 #pragma omp parallel for
     for (int i = 0; i < nparts; i++) {
         xp[profile][i] = (dphi[i] + phi0) / (hnum * omega_rev0 * dtbin) - xorigin;

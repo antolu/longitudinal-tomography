@@ -13,7 +13,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
-#include "kick_and_drift.cuh"
+#include "include/kick_and_drift.cuh"
 
 // ----------------
 // Python interface

@@ -2,12 +2,10 @@
 // Created by anton on 10/22/20.
 //
 
-#include "kick_and_drift.cuh"
+#include "include/kick_and_drift.cuh"
 #include <iostream>
 
 #define THREADS_PER_BLOCK 512
-
-//#include "sin.h"
 
 #define cudaErrorCheck(exit_code) { gpuAssert((exit_code), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)

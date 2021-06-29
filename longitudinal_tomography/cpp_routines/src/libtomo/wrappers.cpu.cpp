@@ -5,16 +5,13 @@
  * Pybind11 wrappers for tomography C++ routines
  */
 
-#include <algorithm>
-#include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include "data_treatment.h"
-#include "kick_and_drift.h"
-#include "libtomo.cpu.h"
-#include "reconstruct.h"
+#include "include/data_treatment.h"
+#include "include/kick_and_drift.h"
+#include "include/reconstruct.h"
 #include "wrappers.cpu.h"
 
 // ----------------
@@ -279,7 +276,7 @@ py::tuple CPU::wrapper_kick_and_drift_array(
 
     try {
         CPU::kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
-                       phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
+                            phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
     } catch (const std::exception &e) {
         cleanup();
         throw;
@@ -365,7 +362,8 @@ py::tuple CPU::wrapper_reconstruct(
         cb = [](const int progress, const int total) { (void) progress, (void) total; };
 
     try {
-        CPU::reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose, cb);
+        CPU::reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose,
+                         cb);
     } catch (const std::exception &e) {
         delete[] weights;
         delete[] discr;

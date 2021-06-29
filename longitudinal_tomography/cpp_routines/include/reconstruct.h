@@ -21,13 +21,13 @@
 
 namespace CPU {
     // Back projection using flattened arrays
-    extern "C" void back_project(double *weights,
+    void back_project(double *weights,
                                  int *flat_points,
                                  const double *flat_profiles,
                                  const int npart, const int nprof);
 
     // Projections using flattened arrays
-    extern "C" void project(double *flat_rec,
+    void project(double *flat_rec,
                             int *flat_points,
                             const double *weights,
                             const int npart, const int nprof);
@@ -89,7 +89,7 @@ namespace CPU {
                             const int nprof,
                             const int nbins);
 
-    extern "C" void reconstruct(double *weights,
+    void reconstruct(double *weights,
                                 const int *xp,
                                 const double *flat_profiles,
                                 double *flat_rec,

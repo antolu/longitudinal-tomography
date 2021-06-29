@@ -14,10 +14,10 @@
 #include <cmath>
 #include <functional>
 
-#include "reconstruct.h"
+#include "include/reconstruct.h"
 
 // Back projection using flattened arrays
-extern "C" void CPU::back_project(double *weights,                     // inn/out
+void CPU::back_project(double *weights,                     // inn/out
                              int *flat_points,       // inn
                              const double *flat_profiles,         // inn
                              const int npart, const int nprof) {     // inn
@@ -28,7 +28,7 @@ extern "C" void CPU::back_project(double *weights,                     // inn/ou
 }
 
 // Projections using flattened arrays
-extern "C" void CPU::project(double *flat_rec,                     // inn/out
+void CPU::project(double *flat_rec,                     // inn/out
                         int *flat_points,        // inn
                         const double *weights,   // inn
                         const int npart, const int nprof) {      // inn
@@ -189,7 +189,7 @@ void CPU::create_flat_points(const int *xp,       //inn
             flat_points[i * nprof + j] += nbins * j;
 }
 
-extern "C" void CPU::reconstruct(double *weights,             // out
+void CPU::reconstruct(double *weights,             // out
                             const int *xp,              // inn
                             const double *flat_profiles, // inn
                             double *flat_rec,            // Out

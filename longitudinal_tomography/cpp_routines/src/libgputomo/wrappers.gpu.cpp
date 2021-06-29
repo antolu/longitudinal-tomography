@@ -10,7 +10,7 @@
 #include <pybind11/numpy.h>
 
 #include "wrappers.gpu.h"
-#include "kick_and_drift.cuh"
+#include "include/kick_and_drift.cuh"
 
 // ----------------
 // Python interface

@@ -17,8 +17,8 @@
 #include <cmath>
 #include <functional>
 
-#include "reconstruct.h"
-#include "reconstruct.cuh"
+#include "include/reconstruct.h"
+#include "include/reconstruct.cuh"
 
 
 void GPU::reconstruct(double *weights,

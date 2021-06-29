@@ -53,11 +53,11 @@ include_directories(${Python_INCLUDE_DIRS})
 include_directories(${PYBIND11_INCLUDE_DIR})
 
 add_library(libtomo SHARED
-    longitudinal_tomography/cpp_routines/libtomo.cpu.cpp
-    longitudinal_tomography/cpp_routines/kick_and_drift.cpp
-    longitudinal_tomography/cpp_routines/reconstruct.cpp
-    longitudinal_tomography/cpp_routines/data_treatment.cpp
-    longitudinal_tomography/cpp_routines/wrappers.cpu.cpp)
+        longitudinal_tomography/cpp_routines/src/libtomo/libtomo.cpu.cpp
+        longitudinal_tomography/cpp_routines/src/libtomo/kick_and_drift.cpp
+        longitudinal_tomography/cpp_routines/src/libtomo/reconstruct.cpp
+        longitudinal_tomography/cpp_routines/src/libtomo/data_treatment.cpp
+        longitudinal_tomography/cpp_routines/src/libtomo/wrappers.cpu.cpp)
 
 target_link_libraries(libtomo ${Python_LIBRARIES})
 
@@ -72,14 +72,14 @@ install(TARGETS libtomo
 if (CUDA_FOUND)
     message("CUDA is available. libgputomo can be built.")
     add_library(libgputomo SHARED
-        longitudinal_tomography/cpp_routines/kick_and_drift.cu
-        longitudinal_tomography/cpp_routines/libtomo.gpu.cpp
-        longitudinal_tomography/cpp_routines/kick_and_drift.cpp
-        longitudinal_tomography/cpp_routines/reconstruct.cpp
-        longitudinal_tomography/cpp_routines/reconstruct.cu
-        longitudinal_tomography/cpp_routines/data_treatment.cpp
-        longitudinal_tomography/cpp_routines/wrappers.gpu.cpp
-        longitudinal_tomography/cpp_routines/wrappers.cpu.cpp
+            longitudinal_tomography/cpp_routines/src/libgputomo/kick_and_drift.cu
+            longitudinal_tomography/cpp_routines/src/libgputomo/libtomo.gpu.cpp
+            longitudinal_tomography/cpp_routines/src/libtomo/kick_and_drift.cpp
+            longitudinal_tomography/cpp_routines/src/libtomo/reconstruct.cpp
+            longitudinal_tomography/cpp_routines/src/libgputomo/reconstruct.cu
+            longitudinal_tomography/cpp_routines/src/libtomo/data_treatment.cpp
+            longitudinal_tomography/cpp_routines/src/libgputomo/wrappers.gpu.cpp
+            longitudinal_tomography/cpp_routines/src/libtomo/wrappers.cpu.cpp
     )
 
     target_link_libraries(libgputomo ${Python_LIBRARIES})

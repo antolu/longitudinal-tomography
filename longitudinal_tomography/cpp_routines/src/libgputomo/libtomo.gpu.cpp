@@ -6,16 +6,11 @@
  */
 
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/numpy.h>
-#include <iostream>
 #include <algorithm>
 
-#include "docs.h"
-#include "libtomo.cpu.h"
-#include "wrappers.cpu.h"
-#include "reconstruct.h"
-#include "data_treatment.h"
+#include "src/docs.h"
+#include "src/libtomo/wrappers.cpu.h"
+#include "wrappers.gpu.h"
 
 // ----------------
 // Python interface
@@ -55,23 +50,23 @@ PYBIND11_MODULE(libtomo, m) {
           "rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none());
 
     m.def("kick_and_drift",
-          py::overload_cast<const d_array&, const d_array&, const d_array&, const d_array&,
-                            const d_array&, const d_array&, const d_array&, const d_array&,
-                            const d_array&, const double, const double, const int,
-                            const int, const int, const int, const bool,
-                            const std::optional<const py::object>
-                            >(&CPU::wrapper_kick_and_drift_scalar), kick_and_drift_docs,
+          py::overload_cast<const d_array &, const d_array &, const d_array &, const d_array &,
+                  const d_array &, const d_array &, const d_array &, const d_array &,
+                  const d_array &, const double, const double, const int,
+                  const int, const int, const int, const bool,
+                  const std::optional<const py::object>
+          >(&GPU::wrapper_kick_and_drift_scalar), kick_and_drift_docs,
           "xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "phi0"_a,
           "deltaE0"_a, "drift_coef"_a, "phi12"_a, "h_ratio"_a, "dturns"_a,
           "rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none());
 
     m.def("kick_and_drift",
-          py::overload_cast<const d_array&, const d_array&, const d_array&, const d_array&,
-                            const d_array&, const d_array&, const d_array&, const d_array&,
-                            const d_array&, const d_array&, const double, const int,
-                            const int, const int, const int, const bool,
-                            const std::optional<const py::object>
-                            >(CPU::wrapper_kick_and_drift_array), kick_and_drift_docs,
+          py::overload_cast<const d_array &, const d_array &, const d_array &, const d_array &,
+                  const d_array &, const d_array &, const d_array &, const d_array &,
+                  const d_array &, const d_array &, const double, const int,
+                  const int, const int, const int, const bool,
+                  const std::optional<const py::object>
+          >(GPU::wrapper_kick_and_drift_array), kick_and_drift_docs,
           "xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "phi0"_a,
           "deltaE0"_a, "drift_coef"_a, "phi12"_a, "h_ratio"_a, "dturns"_a,
           "rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none());
@@ -87,6 +82,10 @@ PYBIND11_MODULE(libtomo, m) {
     m.def("reconstruct", &CPU::wrapper_reconstruct, reconstruct_docs,
           "xp"_a, "waterfall"_a, "n_iter"_a, "n_bins"_a, "n_particles"_a,
           "n_profiles"_a, "verbose"_a = false, "callback"_a = py::none());
+
+    m.def("reconstruct_old", &CPU::wrapper_reconstruct_old, reconstruct_old_docs,
+          "weights"_a, "xp"_a, "flat_profiles"_a, "discr"_a, "n_iter"_a,
+          "n_bins"_a, "n_particles"_a, "n_profiles"_a, "verbose"_a = false);
 
     m.def("make_phase_space", &CPU::wrapper_make_phase_space, make_phase_space_docs,
           "xp"_a, "yp"_a, "weights"_a, "n_bins"_a);
