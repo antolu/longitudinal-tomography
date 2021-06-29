@@ -17,15 +17,15 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
 }
 
 void GPU::kick_and_drift(
-        double *__restrict__ xp,             // inn/out
-        double *__restrict__ yp,             // inn/out
-        double *__restrict__ denergy,         // inn
-        double *__restrict__ dphi,            // inn
-        const double *__restrict__ rf1v,      // inn
-        const double *__restrict__ rf2v,      // inn
-        const double *__restrict__ phi0,      // inn
-        const double *__restrict__ deltaE0,   // inn
-        const double *__restrict__ drift_coef,// inn
+        double *xp,             // inn/out
+        double *yp,             // inn/out
+        double *denergy,         // inn
+        double *dphi,            // inn
+        const double *rf1v,      // inn
+        const double *rf2v,      // inn
+        const double *phi0,      // inn
+        const double *deltaE0,   // inn
+        const double *drift_coef,// inn
         const double *phi12,
         const double hratio,
         const int dturns,
@@ -56,9 +56,6 @@ void GPU::kick_and_drift(
     cudaErrorCheck(cudaMalloc((void **) &d_deltaE0, size_nturns));
     cudaErrorCheck(cudaMalloc((void **) &d_drift_coef, size_nturns));
 
-//    cudaMemcpy(d_xp, xp, size_xyp, cudaMemcpyHostToDevice);
-//    cudaMemcpy(d_yp, yp, size_xyp, cudaMemcpyHostToDevice);
-
     cudaErrorCheck(cudaMemcpy(d_denergy, denergy, size_nparts, cudaMemcpyHostToDevice));
     cudaErrorCheck(cudaMemcpy(d_dphi, dphi, size_nparts, cudaMemcpyHostToDevice));
 
@@ -76,8 +73,6 @@ void GPU::kick_and_drift(
                                                                               nparts, nprofs, ftn_out);
     cudaErrorCheck(cudaPeekAtLastError());
 
-//    cudaErrorCheck( cudaDeviceSynchronize() );
-
     cudaErrorCheck(cudaMemcpy(xp, d_xp, size_xyp, cudaMemcpyDeviceToHost));
     cudaErrorCheck(cudaMemcpy(yp, d_yp, size_xyp, cudaMemcpyDeviceToHost));
 
@@ -93,15 +88,15 @@ void GPU::kick_and_drift(
 }
 
 
-__global__ void GPU::k_d(double *__restrict__ xp,             // inn/out
-                         double *__restrict__ yp,             // inn/out
-                         double *__restrict__ denergy,         // inn
-                         double *__restrict__ dphi,            // inn
-                         const double *__restrict__ rf1v,      // inn
-                         const double *__restrict__ rf2v,      // inn
-                         const double *__restrict__ phi0,      // inn
-                         const double *__restrict__ deltaE0,   // inn
-                         const double *__restrict__ drift_coef,// inn
+__global__ void GPU::k_d(double *xp,             // inn/out
+                         double *yp,             // inn/out
+                         double *denergy,         // inn
+                         double *dphi,            // inn
+                         const double *rf1v,      // inn
+                         const double *rf2v,      // inn
+                         const double *phi0,      // inn
+                         const double *deltaE0,   // inn
+                         const double *drift_coef,// inn
                          const double *phi12,
                          const double hratio,
                          const int dturns,
@@ -182,8 +177,8 @@ __global__ void GPU::k_d(double *__restrict__ xp,             // inn/out
     }
 }
 
-__device__ void GPU::kick_up(const double *__restrict__ dphi,
-                             double *__restrict__ denergy,
+__device__ void GPU::kick_up(const double *dphi,
+                             double *denergy,
                              const double rfv1,
                              const double rfv2,
                              const double phi0,
@@ -197,8 +192,8 @@ __device__ void GPU::kick_up(const double *__restrict__ dphi,
                       + rfv2 * sin(hratio * (dphi[index] + phi0 - phi12)) - acc_kick;
 }
 
-__device__ void GPU::kick_down(const double *__restrict__ dphi,
-                               double *__restrict__ denergy,
+__device__ void GPU::kick_down(const double *dphi,
+                               double *denergy,
                                const double rfv1,
                                const double rfv2,
                                const double phi0,
@@ -212,8 +207,8 @@ __device__ void GPU::kick_down(const double *__restrict__ dphi,
                       + rfv2 * sin(hratio * (dphi[index] + phi0 - phi12)) - acc_kick;
 }
 
-__device__ void GPU::drift_up(double *__restrict__ dphi,
-                              const double *__restrict__ denergy,
+__device__ void GPU::drift_up(double *dphi,
+                              const double *denergy,
                               const double drift_coef,
                               const int nparts,
                               const int index) {
@@ -221,8 +216,8 @@ __device__ void GPU::drift_up(double *__restrict__ dphi,
     dphi[index] -= drift_coef * denergy[index];
 }
 
-__device__ void GPU::drift_down(double *__restrict__ dphi,
-                                const double *__restrict__ denergy,
+__device__ void GPU::drift_down(double *dphi,
+                                const double *denergy,
                                 const double drift_coef,
                                 const int nparts,
                                 const int index) {
@@ -230,10 +225,10 @@ __device__ void GPU::drift_down(double *__restrict__ dphi,
     dphi[index] += drift_coef * denergy[index];
 }
 
-__device__ void GPU::calc_xp_and_yp(double *__restrict__ xp,           // inn/out
-                                    double *__restrict__ yp,           // inn/out
-                                    const double *__restrict__ denergy, // inn
-                                    const double *__restrict__ dphi,    // inn
+__device__ void GPU::calc_xp_and_yp(double *xp,           // inn/out
+                                    double *yp,           // inn/out
+                                    const double *denergy, // inn
+                                    const double *dphi,    // inn
                                     const double phi0,
                                     const double hnum,
                                     const double omega_rev0,

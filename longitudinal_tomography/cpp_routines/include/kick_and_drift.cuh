@@ -12,15 +12,15 @@
 
 namespace GPU {
     void kick_and_drift(
-            double *__restrict__ xp,             // inn/out
-            double *__restrict__ yp,             // inn/out
-            double *__restrict__ denergy,         // inn
-            double *__restrict__ dphi,            // inn
-            const double *__restrict__ rf1v,      // inn
-            const double *__restrict__ rf2v,      // inn
-            const double *__restrict__ phi0,      // inn
-            const double *__restrict__ deltaE0,   // inn
-            const double *__restrict__ drift_coef,// inn
+            double *xp,             // inn/out
+            double *yp,             // inn/out
+            double *denergy,         // inn
+            double *dphi,            // inn
+            const double *rf1v,      // inn
+            const double *rf2v,      // inn
+            const double *phi0,      // inn
+            const double *deltaE0,   // inn
+            const double *drift_coef,// inn
             const double *phi12,
             const double hratio,
             const int dturns,
@@ -30,15 +30,15 @@ namespace GPU {
             const int nprofs,
             const bool ftn_out);
 
-    __global__ void k_d(double *__restrict__ xp,             // inn/out
-                        double *__restrict__ yp,             // inn/out
-                        double *__restrict__ denergy,         // inn
-                        double *__restrict__ dphi,            // inn
-                        const double *__restrict__ rf1v,      // inn
-                        const double *__restrict__ rf2v,      // inn
-                        const double *__restrict__ phi0,      // inn
-                        const double *__restrict__ deltaE0,   // inn
-                        const double *__restrict__ drift_coef,// inn
+    __global__ void k_d(double *xp,             // inn/out
+                        double *yp,             // inn/out
+                        double *denergy,         // inn
+                        double *dphi,            // inn
+                        const double *rf1v,      // inn
+                        const double *rf2v,      // inn
+                        const double *phi0,      // inn
+                        const double *deltaE0,   // inn
+                        const double *drift_coef,// inn
                         const double *phi12,
                         const double hratio,
                         const int dturns,
@@ -48,8 +48,8 @@ namespace GPU {
                         const int nprofs,
                         const bool ftn_out);
 
-    __device__ void kick_up(const double *__restrict__ dphi,
-                            double *__restrict__ denergy,
+    __device__ void kick_up(const double *dphi,
+                            double *denergy,
                             const double rfv1,
                             const double rfv2,
                             const double phi0,
@@ -59,8 +59,8 @@ namespace GPU {
                             const double acc_kick,
                             const int index);
 
-    __device__ void kick_down(const double *__restrict__ dphi,
-                              double *__restrict__ denergy,
+    __device__ void kick_down(const double *dphi,
+                              double *denergy,
                               const double rfv1,
                               const double rfv2,
                               const double phi0,
@@ -70,22 +70,22 @@ namespace GPU {
                               const double acc_kick,
                               const int index);
 
-    __device__ void drift_up(double *__restrict__ dphi,
-                             const double *__restrict__ denergy,
+    __device__ void drift_up(double *dphi,
+                             const double *denergy,
                              const double drift_coef,
                              const int nr_particles,
                              const int index);
 
-    __device__ void drift_down(double *__restrict__ dphi,
-                               const double *__restrict__ denergy,
+    __device__ void drift_down(double *dphi,
+                               const double *denergy,
                                const double drift_coef,
                                const int nr_particles,
                                const int index);
 
-    __device__ void calc_xp_and_yp(double *__restrict__ xp,           // inn/out
-                                   double *__restrict__ yp,           // inn/out
-                                   const double *__restrict__ denergy, // inn
-                                   const double *__restrict__ dphi,    // inn
+    __device__ void calc_xp_and_yp(double *xp,           // inn/out
+                                   double *yp,           // inn/out
+                                   const double *denergy, // inn
+                                   const double *dphi,    // inn
                                    const double phi0,
                                    const double hnum,
                                    const double omega_rev0,
