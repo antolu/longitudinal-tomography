@@ -1,6 +1,6 @@
 /**
  * @author Anton Lu (anton.lu@cern.ch)
- * @file libtomo.cpp
+ * @file wrappers.cpu.cpp
  *
  * Pybind11 wrappers for tomography C++ routines
  */
@@ -8,15 +8,12 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
-#include <iostream>
-#include <algorithm>
 #include <omp.h>
 
-#include "docs.h"
-#include "libtomo.h"
-#include "kick_and_drift.h"
-#include "reconstruct.h"
-#include "data_treatment.h"
+#include "include/data_treatment.h"
+#include "include/kick_and_drift.h"
+#include "include/reconstruct.h"
+#include "wrappers.cpu.h"
 
 // ----------------
 // Python interface
@@ -29,7 +26,7 @@ typedef py::array_t<double, py::array::c_style | py::array::forcecast> d_array;
 typedef py::array_t<int, py::array::c_style | py::array::forcecast> i_array;
 
 
-void wrapper_set_num_threads(const int num_threads) {
+void CPU::wrapper_set_num_threads(const int num_threads) {
     try {
         omp_set_num_threads(num_threads);
     } catch (...) {
@@ -38,15 +35,15 @@ void wrapper_set_num_threads(const int num_threads) {
 }
 
 
-void wrapper_kick_up(const d_array &input_dphi,
-                     const d_array &input_denergy,
-                     const double rf1v,
-                     const double rf2v,
-                     const double phi0,
-                     const double phi12,
-                     const double hratio,
-                     const int nr_particles,
-                     const double acc_kick
+void CPU::wrapper_kick_up(const d_array &input_dphi,
+                          const d_array &input_denergy,
+                          const double rf1v,
+                          const double rf2v,
+                          const double phi0,
+                          const double phi12,
+                          const double hratio,
+                          const int nr_particles,
+                          const double acc_kick
 ) {
     py::buffer_info denergy_buffer = input_denergy.request();
     py::buffer_info dphi_buffer = input_dphi.request();
@@ -54,19 +51,19 @@ void wrapper_kick_up(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    kick_up(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
+    CPU::kick_up(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
 }
 
 
-void wrapper_kick_down(const d_array &input_dphi,
-                       const d_array &input_denergy,
-                       const double rf1v,
-                       const double rf2v,
-                       const double phi0,
-                       const double phi12,
-                       const double hratio,
-                       const int nr_particles,
-                       const double acc_kick
+void CPU::wrapper_kick_down(const d_array &input_dphi,
+                            const d_array &input_denergy,
+                            const double rf1v,
+                            const double rf2v,
+                            const double phi0,
+                            const double phi12,
+                            const double hratio,
+                            const int nr_particles,
+                            const double acc_kick
 ) {
     py::buffer_info denergy_buffer = input_denergy.request();
     py::buffer_info dphi_buffer = input_dphi.request();
@@ -74,18 +71,18 @@ void wrapper_kick_down(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    kick_down(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
+    CPU::kick_down(dphi, denergy, rf1v, rf2v, phi0, phi12, hratio, nr_particles, acc_kick);
 }
 
 
-d_array wrapper_kick(const py::object &machine,
-                     const d_array &denergy,
-                     const d_array &dphi,
-                     const d_array &arr_rfv1,
-                     const d_array &arr_rfv2,
-                     const int n_particles,
-                     const int turn,
-                     bool up) {
+d_array CPU::wrapper_kick(const py::object &machine,
+                          const d_array &denergy,
+                          const d_array &dphi,
+                          const d_array &arr_rfv1,
+                          const d_array &arr_rfv2,
+                          const int n_particles,
+                          const int turn,
+                          bool up) {
     d_array arr_phi0 = d_array(machine.attr("phi0"));
     const double phi12 = py::float_(machine.attr("phi12"));
     const double h_ratio = py::float_(machine.attr("h_ratio"));
@@ -109,10 +106,10 @@ d_array wrapper_kick(const py::object &machine,
 }
 
 
-void wrapper_drift_up(const d_array &input_dphi,
-                      const d_array &input_denergy,
-                      const double drift_coef,
-                      const int n_particles
+void CPU::wrapper_drift_up(const d_array &input_dphi,
+                           const d_array &input_denergy,
+                           const double drift_coef,
+                           const int n_particles
 ) {
     py::buffer_info denergy_buffer = input_denergy.request();
     py::buffer_info dphi_buffer = input_dphi.request();
@@ -120,14 +117,14 @@ void wrapper_drift_up(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    drift_up(dphi, denergy, drift_coef, n_particles);
+    CPU::drift_up(dphi, denergy, drift_coef, n_particles);
 }
 
 
-void wrapper_drift_down(const d_array &input_dphi,
-                        const d_array &input_denergy,
-                        const double drift_coef,
-                        const int nr_particles
+void CPU::wrapper_drift_down(const d_array &input_dphi,
+                             const d_array &input_denergy,
+                             const double drift_coef,
+                             const int nr_particles
 ) {
     py::buffer_info denergy_buffer = input_denergy.request();
     py::buffer_info dphi_buffer = input_dphi.request();
@@ -135,11 +132,11 @@ void wrapper_drift_down(const d_array &input_dphi,
     auto *const denergy = static_cast<double *>(denergy_buffer.ptr);
     auto *const dphi = static_cast<double *>(dphi_buffer.ptr);
 
-    drift_down(dphi, denergy, drift_coef, nr_particles);
+    CPU::drift_down(dphi, denergy, drift_coef, nr_particles);
 }
 
 
-d_array wrapper_drift(
+d_array CPU::wrapper_drift(
         const d_array &denergy,
         const d_array &dphi,
         const d_array &input_drift_coef,
@@ -160,7 +157,7 @@ d_array wrapper_drift(
 
 
 // wrap C++ function with NumPy array IO
-py::tuple wrapper_kick_and_drift_machine(
+py::tuple CPU::wrapper_kick_and_drift_machine(
         const d_array &input_xp,
         const d_array &input_yp,
         const d_array &input_denergy,
@@ -189,7 +186,7 @@ py::tuple wrapper_kick_and_drift_machine(
 }
 
 
-py::tuple wrapper_kick_and_drift_scalar(
+py::tuple CPU::wrapper_kick_and_drift_scalar(
         const d_array &input_xp,
         const d_array &input_yp,
         const d_array &input_denergy,
@@ -222,7 +219,7 @@ py::tuple wrapper_kick_and_drift_scalar(
     return py::make_tuple(input_xp, input_yp);
 }
 
-py::tuple wrapper_kick_and_drift_array(
+py::tuple CPU::wrapper_kick_and_drift_array(
         const d_array &input_xp,
         const d_array &input_yp,
         const d_array &input_denergy,
@@ -288,8 +285,8 @@ py::tuple wrapper_kick_and_drift_array(
         cb = [](const int progress, const int total) { (void) progress, (void) total; };
 
     try {
-        kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
-                       phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
+        CPU::kick_and_drift(xp_d, yp_d, denergy, dphi, rf1v, rf2v, phi0, deltaE0, drift_coef,
+                            phi12, hratio, dturns, rec_prof, nturns, nparts, ftn_out, cb);
     } catch (const std::exception &e) {
         cleanup();
         throw;
@@ -300,7 +297,7 @@ py::tuple wrapper_kick_and_drift_array(
     return py::make_tuple(input_xp, input_yp);
 }
 
-d_array wrapper_back_project(
+d_array CPU::wrapper_back_project(
         const d_array &input_weights,
         const i_array &input_flat_points,
         const d_array &input_flat_profiles,
@@ -316,13 +313,13 @@ d_array wrapper_back_project(
 
     auto *const flat_profiles = static_cast<double *>(buffer_flat_profiles.ptr);
 
-    back_project(weights, flat_points, flat_profiles, n_particles, n_profiles);
+    CPU::back_project(weights, flat_points, flat_profiles, n_particles, n_profiles);
 
     return input_weights;
 }
 
 
-d_array wrapper_project(
+d_array CPU::wrapper_project(
         const d_array &input_flat_rec,
         const i_array &input_flat_points,
         const d_array &input_weights,
@@ -338,15 +335,15 @@ d_array wrapper_project(
     auto *flat_points = static_cast<int *>(buffer_flat_points.ptr);
     auto *const flat_rec = static_cast<double *>(buffer_flat_rec.ptr);
 
-    project(flat_rec, flat_points, weights, n_particles, n_profiles);
+    CPU::project(flat_rec, flat_points, weights, n_particles, n_profiles);
 
-    buffer_flat_rec.shape = std::vector<ssize_t>{n_profiles, n_bins};
+    buffer_flat_rec.shape = std::vector < ssize_t > {n_profiles, n_bins};
 
     return input_flat_rec;
 }
 
 
-py::tuple wrapper_reconstruct(
+py::tuple CPU::wrapper_reconstruct(
         const i_array &input_xp,
         const d_array &waterfall,
         const int n_iter,
@@ -375,7 +372,8 @@ py::tuple wrapper_reconstruct(
         cb = [](const int progress, const int total) { (void) progress, (void) total; };
 
     try {
-        reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose, cb);
+        CPU::reconstruct(weights, xp, flat_profs, recreated, discr, n_iter, n_bins, n_particles, n_profiles, verbose,
+                         cb);
     } catch (const std::exception &e) {
         delete[] weights;
         delete[] discr;
@@ -396,7 +394,7 @@ py::tuple wrapper_reconstruct(
 }
 
 
-py::array_t<double> wrapper_make_phase_space(
+py::array_t<double> CPU::wrapper_make_phase_space(
         const i_array &input_xp,
         const i_array &input_yp,
         const d_array &input_weight,
@@ -416,81 +414,4 @@ py::array_t<double> wrapper_make_phase_space(
     py::capsule capsule(phase_space, [](void *p) { delete[] reinterpret_cast<double *>(p); });
 
     return py::array_t<double>({n_bins, n_bins}, phase_space, capsule);
-}
-
-
-// wrap as Python module
-PYBIND11_MODULE(libtomo, m
-) {
-m.doc() = "pybind11 tomo plugin";
-
-m.def("set_num_threads", &wrapper_set_num_threads, set_num_threads_docs,
-      "num_threads"_a);
-
-m.def("kick", &wrapper_kick, kick_docs,
-"machine"_a, "denergy"_a, "dphi"_a,
-"rfv1"_a, "rfv2"_a, "npart"_a, "turn"_a, "up"_a = true);
-
-m.def("drift", &wrapper_drift, drift_docs,
-"denergy"_a, "dphi"_a, "drift_coef"_a, "npart"_a, "turn"_a,
-"up"_a = true);
-
-m.def("kick_up", &wrapper_kick_up, "Tomography kick up",
-"dphi"_a, "denergy"_a, "rfv1"_a, "rfv2"_a,
-"phi0"_a, "phi12"_a, "h_ratio"_a, "n_particles"_a, "acc_kick"_a);
-
-m.def("kick_down", &wrapper_kick_down, "Tomography kick down",
-"dphi"_a, "denergy"_a, "rfv1"_a, "rfv2"_a,
-"phi0"_a, "phi12"_a, "h_ratio"_a, "n_particles"_a, "acc_kick"_a);
-
-m.def("drift_up", &wrapper_drift_up, "Tomography drift up",
-"dphi"_a, "denergy"_a, "drift_coef"_a, "n_particles"_a);
-
-m.def("drift_down", &wrapper_drift_down, "Tomography drift down",
-"dphi"_a, "denergy"_a, "drift_coef"_a, "n_particles"_a);
-
-m.def("kick_and_drift", &wrapper_kick_and_drift_machine, kick_and_drift_docs,
-"xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "machine"_a,
-"rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none()
-);
-
-m.def("kick_and_drift",
-py::overload_cast<const d_array &, const d_array &, const d_array &, const d_array &,
-        const d_array &, const d_array &, const d_array &, const d_array &,
-        const d_array &, const double, const double, const int,
-        const int, const int, const int, const bool,
-        const std::optional<const py::object>
->(&wrapper_kick_and_drift_scalar), kick_and_drift_docs,
-"xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "phi0"_a,
-"deltaE0"_a, "drift_coef"_a, "phi12"_a, "h_ratio"_a, "dturns"_a,
-"rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none()
-);
-
-m.def("kick_and_drift",
-py::overload_cast<const d_array &, const d_array &, const d_array &, const d_array &,
-        const d_array &, const d_array &, const d_array &, const d_array &,
-        const d_array &, const d_array &, const double, const int,
-        const int, const int, const int, const bool,
-        const std::optional<const py::object>
->(wrapper_kick_and_drift_array), kick_and_drift_docs,
-"xp"_a, "yp"_a, "denergy"_a, "dphi"_a, "rfv1"_a, "rfv2"_a, "phi0"_a,
-"deltaE0"_a, "drift_coef"_a, "phi12"_a, "h_ratio"_a, "dturns"_a,
-"rec_prof"_a, "nturns"_a, "nparts"_a, "ftn_out"_a = false, "callback"_a = py::none()
-);
-
-m.def("project", &wrapper_project, project_docs,
-"flat_rec"_a, "flat_points"_a, "weights"_a,
-"n_particles"_a, "n_profiles"_a, "n_bins"_a);
-
-m.def("back_project", &wrapper_back_project, back_project_docs,
-"weights"_a, "flat_points"_a, "flat_profiles"_a,
-"n_particles"_a, "n_profiles"_a);
-
-m.def("reconstruct", &wrapper_reconstruct, reconstruct_docs,
-"xp"_a, "waterfall"_a, "n_iter"_a, "n_bins"_a, "n_particles"_a,
-"n_profiles"_a, "verbose"_a = false, "callback"_a = py::none()
-);
-
-m.def("make_phase_space", &wrapper_make_phase_space, make_phase_space_docs,
-"xp"_a, "yp"_a, "weights"_a, "n_bins"_a);
 }

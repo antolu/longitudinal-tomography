@@ -1,9 +1,11 @@
 from setuptools import setup
 from os import path
+from glob import glob
 import platform
-from pybind11.setup_helpers import Pybind11Extension
+from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 HERE = path.split(path.abspath(__file__))[0]
+src_base = path.join('longitudinal_tomography', 'cpp_routines')
 
 extra_compile_args = []
 extra_link_args = []
@@ -18,11 +20,9 @@ elif platform.system() == 'Linux':
 cpp_routines = Pybind11Extension(
     'longitudinal_tomography.cpp_routines.libtomo',
     cxx_std=17,
-    sources=['longitudinal_tomography/cpp_routines/libtomo.cpp',
-             'longitudinal_tomography/cpp_routines/reconstruct.cpp',
-             'longitudinal_tomography/cpp_routines/kick_and_drift.cpp',
-             'longitudinal_tomography/cpp_routines/data_treatment.cpp'],
+    sources=glob(path.join(src_base, 'src/libtomo/*.cpp')),
+    include_dirs=[src_base],
     extra_compile_args=extra_compile_args,
     extra_link_args=extra_link_args)
 
-setup(ext_modules=[cpp_routines])
+setup(cmdclass={'build_ext': build_ext}, ext_modules=[cpp_routines])
